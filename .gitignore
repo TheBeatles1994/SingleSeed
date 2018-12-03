@@ -1,0 +1,14 @@
+*.pro.user
+*.pro.user.*
+debug/
+release/
+Makefile
+Makefile.*
+ui_*.h
+object_script.*
+*.txt
+*.xlsx
+*.licx
+version.h
+±¸×¢.md
+outimage/
