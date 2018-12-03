@@ -17,12 +17,8 @@ void testSeed(const string str)
     /* 二值化 */
     seed.getBinary();
     /* 提取单个种子边界点 */
-    seed.areaDivision();
+    seed.seedDivision();
     seed.getPartSrcMat();
-
-    //Mat testMat = seed.srcMat;
-    //imshow("测试图", testMat);
-    //imwrite("algoproc.jpg", testMat);
 }
 
 void SeedProcess::getSrcMat(string str)
@@ -58,7 +54,7 @@ vector<vector<Point>> getContours(Mat binaryMat)
 * 函数功能：
 * 根据面积和凸点个数，初步区分单个种子与粘连种子，单个种子存入signelContours中，粘连种子存入complexContours中
 */
-void SeedProcess::areaDivision()
+void SeedProcess::seedDivision()
 {
     //得到所有边界点
     vector<vector<Point>> contours = getContours(binaryMat);
@@ -117,7 +113,7 @@ Mat SeedProcess::getPartBinaryMat(vector<Point> contour)
 
 /*
 * 函数功能：
-* 输入轮廓，输出该轮廓在原图中对应的矩形区域图
+* 输出轮廓在原图中对应的矩形区域图
 */
 void SeedProcess::getPartSrcMat()
 {
