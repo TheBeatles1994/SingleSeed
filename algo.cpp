@@ -1,6 +1,7 @@
 ﻿#include "algo.h"
 #include <sstream>
 
+string _myfilename = "FB043";
 /*
  * @函数功能:测试程序
  * @输入参数:图片地址字符串
@@ -145,7 +146,7 @@ void SeedProcess::getPartSrcMat()
         //waitKey();
         string str;
         int2str(count, str);
-        imwrite("outimage/img_" + str + ".jpg", tempMat);
+        imwrite("outimage/" + _myfilename + "_" + str + ".jpg", tempMat);
         count++;
     }
 }

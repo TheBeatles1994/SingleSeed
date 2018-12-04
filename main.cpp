@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-    testSeed("srcimage/2.jpg");
+    testSeed("srcimage/"+ _myfilename + ".jpg");
 
     cout<<"Finished!"<<endl;
 

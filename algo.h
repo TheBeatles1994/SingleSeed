@@ -8,6 +8,8 @@
 using namespace std;
 using namespace cv;
 
+extern string _myfilename;
+
 /* 种子处理类 */
 class SeedProcess
 {
