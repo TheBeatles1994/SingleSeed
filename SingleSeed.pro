@@ -18,6 +18,6 @@ HEADERS += \
     algo.h
 
 LIBS+=-L $$PWD/library/win32/opencv/lib/libopencv_*.a
-         $$PWD/library/win32/opencv/libopencv_*.dll
+         #$$PWD/library/win32/opencv/bin/libopencv_*.dll
 
 
