@@ -1,7 +1,7 @@
 ﻿#include "algo.h"
 #include <sstream>
 
-string _myfilename = "FB043";
+string _myfilename = "FB119";
 /*
  * @函数功能:测试程序
  * @输入参数:图片地址字符串
