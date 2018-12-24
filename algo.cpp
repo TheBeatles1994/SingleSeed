@@ -1,7 +1,7 @@
 ﻿#include "algo.h"
 #include <sstream>
 
-string _myfilename = "FB119";
+string _myfilename = "FB057_2.jpg";
 /*
  * @函数功能:测试程序
  * @输入参数:图片地址字符串
@@ -19,7 +19,9 @@ void testSeed(const string str)
     seed.getBinary();
     /* 提取单个种子边界点 */
     seed.seedDivision();
-    seed.getPartSrcMat();
+    //seed.getPartSrcMat();
+    seed.getOutline(Scalar(255,255,255));
+
 }
 
 void SeedProcess::getSrcMat(string str)
@@ -31,12 +33,22 @@ void SeedProcess::getSrcMat(string str)
 * 函数功能：
 * 图像二值化。输入原图，输出二值图
 */
-#define SEEDGRAYVALUE 30               //定义灰度值阈值
+#define SEEDGRAYVALUE 25               //定义灰度值阈值
 void SeedProcess::getBinary()
 {
-    Mat tempGrayMat;
-    cv::cvtColor(srcMat, tempGrayMat, CV_BGR2GRAY);
+    Mat tempGrayMat = imread("srcimage/FB057_2_binary.jpg");
+    //cv::cvtColor(srcMat, tempGrayMat, CV_BGR2GRAY);
+    cv::cvtColor(tempGrayMat, tempGrayMat, CV_BGR2GRAY);
     threshold(tempGrayMat, binaryMat, SEEDGRAYVALUE, 255, CV_THRESH_BINARY);
+    //threshold(tempGrayMat, binaryMat, SEEDGRAYVALUE, 255, CV_THRESH_BINARY_INV);
+    Mat diamond = Mat(3, 3, CV_8UC1, cv::Scalar(1));
+//    morphologyEx(binaryMat, binaryMat, MORPH_ERODE, diamond);
+    morphologyEx(binaryMat, binaryMat, MORPH_OPEN, diamond);
+    morphologyEx(binaryMat, binaryMat, MORPH_OPEN, diamond);
+//    morphologyEx(binaryMat, binaryMat, MORPH_CLOSE, diamond);
+//    morphologyEx(binaryMat, binaryMat, MORPH_CLOSE, diamond);
+//    Canny(binaryMat, binaryMat, 50,100);
+    //imwrite("srcimage/FB057_2_binarys.jpg", binaryMat);
 }
 
 /*
@@ -63,11 +75,11 @@ void SeedProcess::seedDivision()
     for (int i = 0; i < contours.size(); i++)
     {
         double area = contourArea(contours[i]);
-        if (area> 270 && area < 690)
+        if (area> 50 && area < 2500)
         {
             singleContours.push_back(contours[i]);
         }
-        else if (area >= 690)
+        else if (area >= 2500)
         {
                 Mat partBinaryMat = getPartBinaryMat(Mat(contours[i]));
                 if (judgeHowMany(partBinaryMat) == 0)         //因种子粘连而产生的凸缺陷个数为0时
@@ -149,6 +161,48 @@ void SeedProcess::getPartSrcMat()
         imwrite("outimage/" + _myfilename + "_" + str + ".jpg", tempMat);
         count++;
     }
+}
+
+void SeedProcess::getOutline(Scalar color)
+{
+    int count = 0;
+    for(vector<Point> contour:singleContours)
+    {
+        for(Point pt:contour)
+        {
+            srcMat.at<Vec3b>(pt.y, pt.x)[0] = color[0];
+            srcMat.at<Vec3b>(pt.y, pt.x)[1] = color[1];
+            srcMat.at<Vec3b>(pt.y, pt.x)[2] = color[2];
+
+            //将其八邻域都变红，增加边缘线宽度
+            srcMat.at<Vec3b>(pt.y+1, pt.x-1)[0] = color[0];
+            srcMat.at<Vec3b>(pt.y+1, pt.x-1)[1] = color[1];
+            srcMat.at<Vec3b>(pt.y+1, pt.x-1)[2] = color[2];
+            srcMat.at<Vec3b>(pt.y+1, pt.x)[0] = color[0];
+            srcMat.at<Vec3b>(pt.y+1, pt.x)[1] = color[1];
+            srcMat.at<Vec3b>(pt.y+1, pt.x)[2] = color[2];
+            srcMat.at<Vec3b>(pt.y+1, pt.x+1)[0] = color[0];
+            srcMat.at<Vec3b>(pt.y+1, pt.x+1)[1] = color[1];
+            srcMat.at<Vec3b>(pt.y+1, pt.x+1)[2] = color[2];
+            srcMat.at<Vec3b>(pt.y, pt.x-1)[0] = color[0];
+            srcMat.at<Vec3b>(pt.y, pt.x-1)[1] = color[1];
+            srcMat.at<Vec3b>(pt.y, pt.x-1)[2] = color[2];
+            srcMat.at<Vec3b>(pt.y, pt.x+1)[0] = color[0];
+            srcMat.at<Vec3b>(pt.y, pt.x+1)[1] = color[1];
+            srcMat.at<Vec3b>(pt.y, pt.x+1)[2] = color[2];
+            srcMat.at<Vec3b>(pt.y-1, pt.x-1)[0] = color[0];
+            srcMat.at<Vec3b>(pt.y-1, pt.x-1)[1] = color[1];
+            srcMat.at<Vec3b>(pt.y-1, pt.x-1)[2] = color[2];
+            srcMat.at<Vec3b>(pt.y-1, pt.x)[0] = color[0];
+            srcMat.at<Vec3b>(pt.y-1, pt.x)[1] = color[1];
+            srcMat.at<Vec3b>(pt.y-1, pt.x)[2] = color[2];
+            srcMat.at<Vec3b>(pt.y-1, pt.x+1)[0] = color[0];
+            srcMat.at<Vec3b>(pt.y-1, pt.x+1)[1] = color[1];
+            srcMat.at<Vec3b>(pt.y-1, pt.x+1)[2] = color[2];
+        }
+    }
+
+    imwrite("srcimage/outline.jpg", srcMat);
 }
 /*
 * 函数功能：
