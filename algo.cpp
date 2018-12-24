@@ -9,7 +9,7 @@ string _myfilename = "FB057_2.jpg";
  * @注意事项:
  *      无
  */
-void testSeed(const string str)
+void testSingleSeed(const string str)
 {
     /* 读取原图片 */
     SeedProcess seed;
@@ -19,7 +19,9 @@ void testSeed(const string str)
     seed.getBinary();
     /* 提取单个种子边界点 */
     seed.seedDivision();
+    /* 得到原图中单粒种子样本 */
     //seed.getPartSrcMat();
+    /* 为原图画上轮廓 */
     seed.getOutline(Scalar(255,255,255));
 
 }
@@ -36,9 +38,12 @@ void SeedProcess::getSrcMat(string str)
 #define SEEDGRAYVALUE 25               //定义灰度值阈值
 void SeedProcess::getBinary()
 {
-    Mat tempGrayMat = imread("srcimage/FB057_2_binary.jpg");
+//    Mat tempGrayMat;
     //cv::cvtColor(srcMat, tempGrayMat, CV_BGR2GRAY);
+
+    Mat tempGrayMat = imread("srcimage/FB057_2_binary.jpg");
     cv::cvtColor(tempGrayMat, tempGrayMat, CV_BGR2GRAY);
+
     threshold(tempGrayMat, binaryMat, SEEDGRAYVALUE, 255, CV_THRESH_BINARY);
     //threshold(tempGrayMat, binaryMat, SEEDGRAYVALUE, 255, CV_THRESH_BINARY_INV);
     Mat diamond = Mat(3, 3, CV_8UC1, cv::Scalar(1));
@@ -174,7 +179,7 @@ void SeedProcess::getOutline(Scalar color)
             srcMat.at<Vec3b>(pt.y, pt.x)[1] = color[1];
             srcMat.at<Vec3b>(pt.y, pt.x)[2] = color[2];
 
-            //将其八邻域都变红，增加边缘线宽度
+            //应用到其八邻域，增加边缘线宽度
             srcMat.at<Vec3b>(pt.y+1, pt.x-1)[0] = color[0];
             srcMat.at<Vec3b>(pt.y+1, pt.x-1)[1] = color[1];
             srcMat.at<Vec3b>(pt.y+1, pt.x-1)[2] = color[2];

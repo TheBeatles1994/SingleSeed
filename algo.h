@@ -27,7 +27,7 @@ private:
     Mat binaryMat;  //二值图
 };
 /* 测试函数 */
-void testSeed(const string str);
+void testSingleSeed(const string str);
 /* int转string */
 void int2str(const int &int_temp,string &string_temp);
 #endif
